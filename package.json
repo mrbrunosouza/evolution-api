@@ -4,6 +4,9 @@
   "description": "Rest api for communication with WhatsApp",
   "main": "./dist/main.js",
   "type": "commonjs",
+  "overrides": {
+    "@types/mime": "3.0.4"
+  },
   "scripts": {
     "build": "tsc --noEmit && tsup",
     "start": "tsnd -r tsconfig-paths/register --files --transpile-only ./src/main.ts",
@@ -78,7 +81,7 @@
     "link-preview-js": "^3.0.13",
     "long": "^5.2.3",
     "mediainfo.js": "^0.3.4",
-    "mime": "^4.0.0",
+    "mime": "^2.6.0",
     "mime-types": "^2.1.35",
     "minio": "^8.0.3",
     "multer": "^1.4.5-lts.1",
