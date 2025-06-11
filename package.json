@@ -4,9 +4,6 @@
   "description": "Rest api for communication with WhatsApp",
   "main": "./dist/main.js",
   "type": "commonjs",
-  "overrides": {
-    "@types/mime": "3.0.4"
-  },
   "scripts": {
     "build": "tsc --noEmit && tsup",
     "start": "tsnd -r tsconfig-paths/register --files --transpile-only ./src/main.ts",
