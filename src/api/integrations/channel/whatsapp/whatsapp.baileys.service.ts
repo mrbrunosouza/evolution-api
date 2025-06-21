@@ -146,11 +146,6 @@ import { v4 } from 'uuid';
 
 import { useVoiceCallsBaileys } from './voiceCalls/useVoiceCallsBaileys';
 
-interface VoiceCallWASocket extends WASocket {
-  offerCall: (jid: string, isVideo: boolean) => Promise<any>;
-  terminateCall: (id: string, to: string) => Promise<any>;
-}
-
 const groupMetadataCache = new CacheService(new CacheEngine(configService, 'groups').getEngine());
 
 // Adicione a função getVideoDuration no início do arquivo
@@ -697,7 +692,7 @@ export class BaileysStartupService extends ChannelStartupService {
 
     this.endSession = false;
 
-    this.client = makeWASocket(socketConfig) as VoiceCallWASocket;
+    this.client = makeWASocket(socketConfig);
 
     if (this.localSettings.wavoipToken && this.localSettings.wavoipToken.length > 0) {
       useVoiceCallsBaileys(this.localSettings.wavoipToken, this.client, this.connectionStatus.state as any, true);
