@@ -1,10 +1,11 @@
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 
-# Install system dependencies and pnpm in a single layer to reduce network calls
-RUN apk update && \
-    apk add --no-cache git ffmpeg wget curl bash openssl dos2unix && \
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y git ffmpeg wget curl bash openssl dos2unix && \
     npm install -g pnpm && \
-    rm -rf /var/cache/apk/*
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 LABEL version="2.2.3" description="Api to control whatsapp features through http requests." 
 LABEL maintainer="Davidson Gomes" git="https://github.com/DavidsonGomes"
@@ -32,13 +33,14 @@ RUN ./Docker/scripts/generate_database.sh
 
 RUN pnpm run build
 
-FROM node:20-alpine AS final
+FROM node:20-slim AS final
 
-# Install system dependencies and pnpm in a single layer
-RUN apk update && \
-    apk add --no-cache tzdata ffmpeg bash openssl && \
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y tzdata ffmpeg bash openssl && \
     npm install -g pnpm && \
-    rm -rf /var/cache/apk/*
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV TZ=America/Sao_Paulo
 
