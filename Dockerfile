@@ -3,18 +3,15 @@ FROM node:20-alpine AS builder
 RUN apk update && \
     apk add git ffmpeg wget curl bash openssl
 
-# Install pnpm
-RUN npm install -g pnpm
-
 LABEL version="2.2.3" description="Api to control whatsapp features through http requests." 
 LABEL maintainer="Davidson Gomes" git="https://github.com/DavidsonGomes"
 LABEL contact="contato@atendai.com"
 
 WORKDIR /evolution
 
-COPY ./package.json ./pnpm-lock.yaml ./tsconfig.json ./
+COPY ./package.json ./tsconfig.json ./
 
-RUN pnpm install
+RUN npm install
 
 COPY ./src ./src
 COPY ./public ./public
@@ -30,22 +27,19 @@ RUN chmod +x ./Docker/scripts/* && dos2unix ./Docker/scripts/*
 
 RUN ./Docker/scripts/generate_database.sh
 
-RUN pnpm run build
+RUN npm run build
 
 FROM node:20-alpine AS final
 
 RUN apk update && \
     apk add tzdata ffmpeg bash openssl
 
-# Install pnpm
-RUN npm install -g pnpm
-
 ENV TZ=America/Sao_Paulo
 
 WORKDIR /evolution
 
 COPY --from=builder /evolution/package.json ./package.json
-COPY --from=builder /evolution/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /evolution/package-lock.json ./package-lock.json
 
 COPY --from=builder /evolution/node_modules ./node_modules
 COPY --from=builder /evolution/dist ./dist
@@ -61,4 +55,4 @@ ENV DOCKER_ENV=true
 
 EXPOSE 8080
 
-ENTRYPOINT ["/bin/bash", "-c", ". ./Docker/scripts/deploy_database.sh && pnpm run start:prod" ]
+ENTRYPOINT ["/bin/bash", "-c", ". ./Docker/scripts/deploy_database.sh && npm run start:prod" ]
